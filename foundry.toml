@@ -1,0 +1,13 @@
+[profile.default]
+libs = ["node_modules", "foundry/lib"]
+out = "foundry/out"
+remappings = [
+  '@openzeppelin/=node_modules/@openzeppelin/',
+  'eth-gas-reporter/=node_modules/eth-gas-reporter/',
+  'hardhat/=node_modules/hardhat/',
+  'forge-std/=lib/forge-std/src/',
+]
+src = "foundry/src"
+test = 'foundry/test'
+
+# See more config options https://github.com/foundry-rs/foundry/tree/master/config

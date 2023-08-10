@@ -1,0 +1,91 @@
+basePath: /
+definitions:
+  gin.H:
+    additionalProperties: {}
+    type: object
+  models.Submission:
+    properties:
+      code:
+        type: string
+      code_id:
+        type: string
+      uuid:
+        type: string
+    type: object
+  models.SubmissionTest:
+    properties:
+      code:
+        type: string
+      code_test:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  title: Your Gin API
+  version: "1.0"
+paths:
+  /example/helloworld:
+    get:
+      consumes:
+      - application/json
+      description: do ping
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: ping example
+      tags:
+      - example
+  /execute-code:
+    post:
+      consumes:
+      - application/json
+      description: Writes the request body to a file.
+      parameters:
+      - description: Submission JSON
+        in: body
+        name: submission
+        required: true
+        schema:
+          $ref: '#/definitions/models.Submission'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Write to File
+  /execute-code-test:
+    post:
+      consumes:
+      - application/json
+      description: Writes the request body to a file and run test.
+      parameters:
+      - description: SubmissionTest JSON
+        in: body
+        name: SubmissionTest
+        required: true
+        schema:
+          $ref: '#/definitions/models.SubmissionTest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Execute Code Test
+swagger: "2.0"

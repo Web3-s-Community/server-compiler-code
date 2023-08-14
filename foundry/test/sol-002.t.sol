@@ -6,7 +6,7 @@ import {ValueTypes} from "../src/sol-002.sol";
 
 // https://book.getfoundry.sh/reference/ds-test#asserting
 // https://github.com/dabit3/foundry-cheatsheet#testing
-contract CodeTestTest is Test {
+contract ValueTypesTest is Test {
     ValueTypes public _contract;
 
     function setUp() public {

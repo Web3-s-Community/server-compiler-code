@@ -8,6 +8,7 @@ import (
 	"io"
 	"strings"
 	"bytes"
+	"io/ioutil"
 
 	"server-compiler-code/models"
 )
@@ -132,4 +133,68 @@ func WorkFlowExecuteCode(submission models.Submission) (string, error) {
 
 	return output, nil
 
+}
+
+func WorkFlowFormatCode(submission models.Submission) (string, error) {
+
+	code := submission.Code
+	codeID := submission.CodeID
+	uuid := submission.Uuid
+
+	err := SaveCodeFile(code, uuid, codeID)
+	if err != nil {
+		return "", fmt.Errorf("Failed to write request to file: %s", err.Error())
+	}
+
+	// Formatting Code
+	_, err = FormattingCode(uuid, codeID)
+	if err != nil {
+		return "", fmt.Errorf("Execution failed: %s", err.Error())
+	}
+
+	content, err := ReadFileCode(uuid, codeID)
+
+	if err != nil {
+		return "", fmt.Errorf("Execution failed: %s", err.Error())
+	}
+
+	return content, nil
+
+}
+
+
+func FormattingCode(uuid string, codeID string) (string, error) {
+
+	folderSrcUserPath := foundrySrcPath + "/" + uuid
+	filePath := folderSrcUserPath + "/" + codeID + ".sol"
+
+	cmd := exec.Command("npx", "prettier", "--write", "--plugin=prettier-plugin-solidity", filePath)
+
+	// Set up standard input and output buffers to interact with the command
+	var stdout, stderr bytes.Buffer
+	// cmd.Stdin = bytes.NewReader(code)
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+
+	// Run the command
+	err := cmd.Run()
+	if err != nil {
+		return "", fmt.Errorf("execution failed: %s\nstderr: %s", err.Error(), stderr.String())
+	}
+
+	return stdout.String(), nil
+}
+
+func ReadFileCode(uuid string, codeID string) (string, error) {
+
+	folderSrcUserPath := foundrySrcPath + "/" + uuid
+	filePath := folderSrcUserPath + "/" + codeID + ".sol"
+
+	content, err := ioutil.ReadFile(filePath)
+
+	if err != nil {
+		return "", fmt.Errorf("Error reading file: %s", err.Error())
+	}
+
+	return string(content), nil
 }

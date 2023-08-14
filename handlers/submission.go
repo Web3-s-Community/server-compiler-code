@@ -29,16 +29,25 @@ func ExecuteCodeHandler(c *gin.Context) {
 		return
 	}
 
-	_, err := util.WorkFlowExecuteCode(_submission)
+	output, err := util.WorkFlowExecuteCode(_submission)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Request written to file",
-			"error": fmt.Sprintf("Execution failed: %s", err.Error()),
+		c.JSON(http.StatusOK, gin.H{
+			"codeId": _submission.CodeID,
+			"status": "failed",
+			"output": fmt.Sprintf("%s", err.Error()),
+			"task": "test",
+			"error": []byte(`{"type":"error"}`),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Finish"})
+	c.JSON(http.StatusOK, gin.H{
+		"codeId": _submission.CodeID,
+		"status": "passed",
+		"output": output,
+		"task": "test",
+		"error": nil,
+	})
 }
 
 // ExecuteCodeTestHandler writes the request body to a file.
@@ -119,4 +128,46 @@ func ExecuteCodeTestHandler(c *gin.Context) {
 	// }
 	output := ""
 	c.JSON(http.StatusOK, gin.H{"message": "Finish", "output": output})
+}
+
+// FormatCodeHandler .
+//	@Summary		Format Code
+//	@Description	Format Code.
+//	@Accept			json
+//	@Produce		json
+//	@Param			submission	body		models.Submission	true	"Submission JSON"
+//	@Success		200			{object}	gin.H
+//	@Failure		500			{object}	gin.H
+//	@Router			/format-code [post]
+func FormatCodeHandler(c *gin.Context) {
+
+	var _submission models.Submission
+
+	// Call BindJSON to bind the received JSON to
+	// _submission.
+	if err := c.BindJSON(&_submission); err != nil {
+		return
+	}
+
+	code, err := util.WorkFlowFormatCode(_submission)
+	if err != nil {
+		// http.StatusInternalServerError
+		c.JSON(http.StatusOK, gin.H{
+			"codeId": _submission.CodeID,
+			"status": "failed",
+			"output": "",
+			"task": "format",
+			"error": []byte(`{"type":"error"}`),
+		})
+		// "error": fmt.Sprintf("Execution failed: %s", err.Error()),
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"codeId": _submission.CodeID,
+		"status": "passed",
+		"output": code,
+		"task": "format",
+		"error": nil,
+	})
 }

@@ -1,6 +1,15 @@
 # server-compiler-code
 Server Compiler Code
-build
+
+Setup foundry
+```sh
+. bash/foundry.sh
+```
+
+Setup setup format
+```sh
+npm install
+```
 
 Build
 ```sh
@@ -45,6 +54,32 @@ curl -X 'POST' \
 }'
 ```
 
+Format *TRUE*
+```sh
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/format-code' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "code": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract HelloWorld \n{\n    string public greet = \"Hello World\";\n}",
+  "code_id": "sol-001",
+  "uuid": "user1"
+}'
+```
+
+Format *FALSE*
+```sh
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/format-code' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "code": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract HelloWorld \n{\n    string public greet = \"Hello \nWorld\";\n}",
+  "code_id": "sol-001",
+  "uuid": "user1"
+}'
+```
+
 ## Swagger
 
 ### View Swagger UI
@@ -54,5 +89,5 @@ curl -X 'POST' \
 ### Build Swagger
 
 ```sh
-. bash/swag.sh 
+. bash/swag.sh
 ```

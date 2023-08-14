@@ -6,7 +6,7 @@ import {FunctionIntro} from "../src/sol-003.sol";
 
 // https://book.getfoundry.sh/reference/ds-test#asserting
 // https://github.com/dabit3/foundry-cheatsheet#testing
-contract CodeTestTest is Test {
+contract FunctionIntroTest is Test {
     FunctionIntro public _contract;
 
     function setUp() public {

@@ -46,6 +46,7 @@ func main() {
 
 	   v1.POST("/execute-code", handlers.ExecuteCodeHandler)
 	   v1.POST("/execute-code-test", handlers.ExecuteCodeTestHandler)
+	   v1.POST("/format-code", handlers.FormatCodeHandler)
 	}
 
 	// r.POST("/writeToFile", writeToFileHandler)

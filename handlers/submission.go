@@ -199,7 +199,7 @@ func CompilerCodeHandler(c *gin.Context) {
 			"codeId": _submission.CodeID,
 			"status": "failed",
 			"output": result,
-			"task": "format",
+			"task": "compile",
 			"error": map[string]string{"type":"error"},
 		})
 		// "error": fmt.Sprintf("Execution failed: %s", err.Error()),
@@ -210,7 +210,7 @@ func CompilerCodeHandler(c *gin.Context) {
 		"codeId": _submission.CodeID,
 		"status": "passed",
 		"output": result,
-		"task": "format",
+		"task": "compile",
 		"error": nil,
 	})
 }

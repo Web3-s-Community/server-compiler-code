@@ -25,6 +25,30 @@ info:
   title: Your Gin API
   version: "1.0"
 paths:
+  /compiler-code:
+    post:
+      consumes:
+      - application/json
+      description: Compiler Code.
+      parameters:
+      - description: Submission JSON
+        in: body
+        name: submission
+        required: true
+        schema:
+          $ref: '#/definitions/models.Submission'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Compiler Code
   /example/helloworld:
     get:
       consumes:

@@ -7,10 +7,13 @@ import (
 	"os/exec"
 	"io"
 	"strings"
-	"bytes"
+	// "bytes"
 	"io/ioutil"
 
 	"server-compiler-code/models"
+
+
+	// log "github.com/sirupsen/logrus"
 )
 
 const foundrySrcPath string = "foundry/src"
@@ -58,29 +61,6 @@ func CopyFileTestToUserFolder(uuid string,codeID string) (error) {
 	return nil
 }
 
-func ExecuteCodeTest(uuid string, codeID string) (string, error) {
-
-	folderTestUserPath := foundryTestPath + "/" + uuid
-	fileTestUserPath := folderTestUserPath + "/" + codeID + ".t.sol"
-
-	cmd := exec.Command("forge", "test", "--match-path", fileTestUserPath)
-	// cmd := exec.Command("forge", "test", "--match-contract", fileTestRegex)
-
-	// Set up standard input and output buffers to interact with the command
-	var stdout, stderr bytes.Buffer
-	// cmd.Stdin = bytes.NewReader(code)
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-
-	// Run the command
-	err := cmd.Run()
-	if err != nil {
-		return "", fmt.Errorf("execution failed: %s\nstderr: %s", err.Error(), stderr.String())
-	}
-
-	return stdout.String(), nil
-}
-
 func SaveCodeFile(code string, uuid string, codeID string) (error) {
 
 	// Create and open the file
@@ -126,63 +106,20 @@ func WorkFlowExecuteCode(submission models.Submission) (string, error) {
 	}
 
 	// Execute the code
-	output, err := ExecuteCodeTest(uuid, codeID)
+	folderTestUserPath := foundryTestPath + "/" + uuid
+	fileTestUserPath := folderTestUserPath + "/" + codeID + ".t.sol"
+
+	cmd := exec.Command("forge", "test", "--match-path", fileTestUserPath)
+	// cmd := exec.Command("forge", "test", "--match-contract", fileTestRegex)
+
+	result, err := cmd.Output()
+	resultString := string(result[:])
 	if err != nil {
-		return "", fmt.Errorf("Execution failed: %s", err.Error())
+		return resultString, err
 	}
 
-	return output, nil
+	return resultString, nil
 
-}
-
-func WorkFlowFormatCode(submission models.Submission) (string, error) {
-
-	code := submission.Code
-	codeID := submission.CodeID
-	uuid := submission.Uuid
-
-	err := SaveCodeFile(code, uuid, codeID)
-	if err != nil {
-		return "", fmt.Errorf("Failed to write request to file: %s", err.Error())
-	}
-
-	// Formatting Code
-	_, err = FormattingCode(uuid, codeID)
-	if err != nil {
-		return "", fmt.Errorf("Execution failed: %s", err.Error())
-	}
-
-	content, err := ReadFileCode(uuid, codeID)
-
-	if err != nil {
-		return "", fmt.Errorf("Execution failed: %s", err.Error())
-	}
-
-	return content, nil
-
-}
-
-
-func FormattingCode(uuid string, codeID string) (string, error) {
-
-	folderSrcUserPath := foundrySrcPath + "/" + uuid
-	filePath := folderSrcUserPath + "/" + codeID + ".sol"
-
-	cmd := exec.Command("npx", "prettier", "--write", "--plugin=prettier-plugin-solidity", filePath)
-
-	// Set up standard input and output buffers to interact with the command
-	var stdout, stderr bytes.Buffer
-	// cmd.Stdin = bytes.NewReader(code)
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-
-	// Run the command
-	err := cmd.Run()
-	if err != nil {
-		return "", fmt.Errorf("execution failed: %s\nstderr: %s", err.Error(), stderr.String())
-	}
-
-	return stdout.String(), nil
 }
 
 func ReadFileCode(uuid string, codeID string) (string, error) {
@@ -197,4 +134,67 @@ func ReadFileCode(uuid string, codeID string) (string, error) {
 	}
 
 	return string(content), nil
+}
+
+func WorkFlowFormatCode(submission models.Submission) (string, error) {
+
+	code := submission.Code
+	codeID := submission.CodeID
+	uuid := submission.Uuid
+
+	err := SaveCodeFile(code, uuid, codeID)
+	if err != nil {
+		return "", fmt.Errorf("Failed to write request to file: %s", err.Error())
+	}
+
+	// Formatting Code
+	folderSrcUserPath := foundrySrcPath + "/" + uuid
+	filePath := folderSrcUserPath + "/" + codeID + ".sol"
+
+	cmd := exec.Command("npx", "prettier", "--write", "--plugin=prettier-plugin-solidity", filePath)
+	result, err := cmd.Output()
+	resultString := string(result[:])
+
+	// log.Info(resultString)
+
+	if err != nil {
+		// log.Info(result)
+		return resultString, fmt.Errorf("Execution failed: %s", err.Error())
+	}
+
+	content, err := ReadFileCode(uuid, codeID)
+
+	if err != nil {
+		return "", fmt.Errorf("Read File Code failed: %s", err.Error())
+	}
+
+	return content, nil
+
+}
+
+func WorkFlowCompilerCode(submission models.Submission) (string, error) {
+
+	code := submission.Code
+	codeID := submission.CodeID
+	uuid := submission.Uuid
+
+	err := SaveCodeFile(code, uuid, codeID)
+	if err != nil {
+		return "", fmt.Errorf("Failed to write request to file: %s", err.Error())
+	}
+
+	// Compiler Code
+	// folderSrcUserPath := foundrySrcPath + "/" + uuid
+	// filePath := folderSrcUserPath + "/" + codeID + ".sol"
+
+	cmd := exec.Command("forge", "build")
+	result, err := cmd.Output()
+	resultString := string(result[:])
+
+	if err != nil {
+		return resultString, fmt.Errorf("Execution failed: %s", err.Error())
+	}
+
+	return resultString, nil
+
 }

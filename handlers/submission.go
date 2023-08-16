@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	// "encoding/json"
 
 	"github.com/gin-gonic/gin"
 
@@ -34,9 +35,9 @@ func ExecuteCodeHandler(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"codeId": _submission.CodeID,
 			"status": "failed",
-			"output": fmt.Sprintf("%s", err.Error()),
+			"output": fmt.Sprintf("%s\n%s", output, err.Error()),
 			"task": "test",
-			"error": []byte(`{"type":"error"}`),
+			"error": map[string]string{"type":"error"},
 		})
 		return
 	}
@@ -149,15 +150,15 @@ func FormatCodeHandler(c *gin.Context) {
 		return
 	}
 
-	code, err := util.WorkFlowFormatCode(_submission)
+	result, err := util.WorkFlowFormatCode(_submission)
 	if err != nil {
 		// http.StatusInternalServerError
 		c.JSON(http.StatusOK, gin.H{
 			"codeId": _submission.CodeID,
 			"status": "failed",
-			"output": "",
+			"output": result,
 			"task": "format",
-			"error": []byte(`{"type":"error"}`),
+			"error": map[string]string{"type":"error"},
 		})
 		// "error": fmt.Sprintf("Execution failed: %s", err.Error()),
 		return
@@ -166,7 +167,49 @@ func FormatCodeHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"codeId": _submission.CodeID,
 		"status": "passed",
-		"output": code,
+		"output": result,
+		"task": "format",
+		"error": nil,
+	})
+}
+
+// CompilerCodeHandler .
+//	@Summary		Compiler Code
+//	@Description	Compiler Code.
+//	@Accept			json
+//	@Produce		json
+//	@Param			submission	body		models.Submission	true	"Submission JSON"
+//	@Success		200			{object}	gin.H
+//	@Failure		500			{object}	gin.H
+//	@Router			/compiler-code [post]
+func CompilerCodeHandler(c *gin.Context) {
+
+	var _submission models.Submission
+
+	// Call BindJSON to bind the received JSON to
+	// _submission.
+	if err := c.BindJSON(&_submission); err != nil {
+		return
+	}
+
+	result, err := util.WorkFlowCompilerCode(_submission)
+	if err != nil {
+		// http.StatusInternalServerError
+		c.JSON(http.StatusOK, gin.H{
+			"codeId": _submission.CodeID,
+			"status": "failed",
+			"output": result,
+			"task": "format",
+			"error": map[string]string{"type":"error"},
+		})
+		// "error": fmt.Sprintf("Execution failed: %s", err.Error()),
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"codeId": _submission.CodeID,
+		"status": "passed",
+		"output": result,
 		"task": "format",
 		"error": nil,
 	})

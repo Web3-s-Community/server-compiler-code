@@ -1,4 +1,4 @@
 #!/bin/sh
 
-# export PATH=$PATH:$HOME/go/bin/
+export PATH=$PATH:$HOME/go/bin/
 swag init --parseDependency --parseInternal

@@ -80,6 +80,32 @@ curl -X 'POST' \
 }'
 ```
 
+Compiler *TRUE*
+```sh
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/compiler-code' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "code": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract HelloWorld \n{\n    string public greet = \"Hello World\";\n}",
+  "code_id": "sol-001",
+  "uuid": "user1"
+}'
+```
+
+Compiler *FALSE*
+```sh
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/compiler-code' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "code": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract HelloWorld \n{\n    string public greet = \"Hello \nWorld\";\n}",
+  "code_id": "sol-001",
+  "uuid": "user1"
+}'
+```
+
 ## Swagger
 
 ### View Swagger UI

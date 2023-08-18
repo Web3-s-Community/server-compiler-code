@@ -1,0 +1,17 @@
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.13;
+
+import {Test, console2} from "forge-std/Test.sol";
+import {Constants} from "../../src/{{.FolderUuid}}/sol-010.sol";
+
+contract DefaultValuesTest is Test {
+    Constants public _contract;
+
+    function setUp() public {
+        _contract = new Constants();
+    }
+
+    function testMyUnit() public {
+        assertEq(_contract.MY_UINT(), 123);
+    }
+}

@@ -1,0 +1,25 @@
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.13;
+
+import {Test, console2} from "forge-std/Test.sol";
+import {Counter} from "../../src/{{.FolderUuid}}/sol-008.sol";
+
+contract CounterTest is Test {
+    Counter public _contract;
+
+    function setUp() public {
+        _contract = new Counter();
+    }
+
+    function testFuncInc() public {
+        _contract.inc();
+        assertEq(_contract.count(), 1);
+    }
+
+    function testFuncDec() public {
+        _contract.inc();
+        assertEq(_contract.count(), 1);
+        _contract.dec();
+        assertEq(_contract.count(), 0);
+    }
+}

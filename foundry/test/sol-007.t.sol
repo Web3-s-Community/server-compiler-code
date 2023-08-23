@@ -20,8 +20,8 @@ contract ViewAndPureFunctionsTest is Test {
     }
 
     function testFuncAdd() public {
-        assertEq(_contract.add(5,10), 15);
-        assertEq(_contract.add(12,1), 13);
-        assertEq(_contract.add(7,8), 15);
+        assertEq(_contract.add(5, 10), 15);
+        assertEq(_contract.add(12, 1), 13);
+        assertEq(_contract.add(7, 8), 15);
     }
 }

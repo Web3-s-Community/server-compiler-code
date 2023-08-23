@@ -2,9 +2,9 @@
 pragma solidity ^0.8.20;
 
 contract DefaultValues {
-    int public i; // 0
+    int256 public i; // 0
     bytes32 public b32; // 0x0000000000000000000000000000000000000000000000000000000000000000
     address public addr; // 0x0000000000000000000000000000000000000000
-    uint public u;
+    uint256 public u;
     bool public b;
 }

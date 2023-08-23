@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 contract ForAndWhileLoops {
     function loop() external pure {
         // for loop
-        for (uint i = 0; i < 10; i++) {
+        for (uint256 i = 0; i < 10; i++) {
             if (i == 3) {
                 // Skip to next iteration with continue
                 continue;
@@ -16,15 +16,15 @@ contract ForAndWhileLoops {
         }
 
         // while loop
-        uint j;
+        uint256 j;
         while (j < 10) {
             j++;
         }
     }
 
-    function sum(uint _n) external pure returns (uint) {
-        uint total;
-        for (uint i = 1; i <= _n; i++) {
+    function sum(uint256 _n) external pure returns (uint256) {
+        uint256 total;
+        for (uint256 i = 1; i <= _n; i++) {
             total += i;
         }
         return total;

@@ -9,5 +9,6 @@ remappings = [
 ]
 src = "foundry/src"
 test = 'foundry/test'
-
+# https://book.getfoundry.sh/reference/config/solidity-compiler?highlight=warnings#deny_warnings
+deny_warnings = true
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config

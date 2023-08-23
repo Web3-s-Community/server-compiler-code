@@ -7,8 +7,8 @@ contract LocalVariables {
     //     bool b = true;
     // }
 
-    function mul() external pure returns (uint) {
-        uint x = 123456;
+    function mul() external pure returns (uint256) {
+        uint256 x = 123456;
         return x * x;
     }
 }
